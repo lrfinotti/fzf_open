@@ -19,7 +19,7 @@ CUR_PATH="$PWD"
 # create cache
 cd "$HOME"
 fdfind -a -t file > "$CACHE_DIR"/all_files
-fdfind -a -t -L directory > "$CACHE_DIR"/all_directories
+fdfind -a -t directory -L > "$CACHE_DIR"/all_directories
 
 # ############ replace links ################
 
