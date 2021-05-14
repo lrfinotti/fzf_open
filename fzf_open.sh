@@ -209,7 +209,7 @@ cd_fzf_here() {
            fzf --preview="tree -C -L 1 {}" \
            --bind="space:toggle-preview")"
     else
-        cd "$(fdfind -t d -L -i $@|\
+        cd "$(fdfind -t d -L -i $@ |\
            fzf --preview="tree -C -L 1 {}" \
            --bind="space:toggle-preview")"
     fi
