@@ -24,21 +24,29 @@ fi
 
 # LaTeX files
 open_latex_emacs() (
+    OIFS="$IFS"
+    IFS='
+'
     if [ $# -eq 0 ]
     then
         em $(fzf -m --preview="batcat --color=always {}" < "$CACHE_DIR"/tex_files)
     else
         em $(rg -i "${@}"'[^/]*$' "$CACHE_DIR"/tex_files | fzf -m --preview="batcat --color=always {}")
     fi
+    IFS="$OIFS"
 )
 
 open_latex_emacs_here() (
+    OIFS="$IFS"
+    IFS='
+'
     if [ $# -eq 0 ]
     then
         em $(fdfind [.]tex$ | fzf -m --preview="batcat --color=always {}")
     else
         em $(fdfind [.]tex$ | rg -i "${@}"'[^/]*$' | fzf -m --preview="batcat --color=always {}")
     fi
+    IFS="$OIFS"
 )
 
 #####################################
@@ -46,21 +54,29 @@ open_latex_emacs_here() (
 # text files
 
 open_text_emacs() (
+    OIFS="$IFS"
+    IFS='
+'
     if [ $# -eq 0 ]
     then
         em $(fzf -m --preview="batcat --color=always {}" < "$CACHE_DIR"/txt_files)
     else
         em $(rg -i "${@}"'[^/]*$' "$CACHE_DIR"/txt_files | fzf -m --preview="batcat --color=always {}")
     fi
+    IFS="$OIFS"
 )
 
 open_text_emacs_here() (
+    OIFS="$IFS"
+    IFS='
+'
     if [ $# -eq 0 ]
     then
         em $(fdfind '[.]txt$|[.]md$|[.]text$' | fzf -m --preview="batcat --color=always {}")
     else
         em $(fdfind '[.]txt$|[.]md$|[.]text$' | rg -i "${@}"'[^/]*$' | fzf -m --preview="batcat --color=always {}")
     fi
+    IFS="$OIFS"
 )
 
 #####################################
@@ -68,21 +84,29 @@ open_text_emacs_here() (
 # org files
 
 open_org_emacs() (
+    OIFS="$IFS"
+    IFS='
+'
     if [ $# -eq 0 ]
     then
         em $(fzf -m --preview="batcat --color=always {}" < "$CACHE_DIR"/org_files)
     else
         em $(rg -i "${@}"'[^/]*$' "$CACHE_DIR"/org_files | fzf -m --preview="batcat --color=always {}")
     fi
+    IFS="$OIFS"
 )
 
 open_org_emacs_here() (
+    OIFS="$IFS"
+    IFS='
+'
     if [ $# -eq 0 ]
     then
         em $(fdfind '[.]org$' | fzf -m --preview="batcat --color=always {}")
     else
         em $(fdfind '[.]org$' | rg -i "${@}"'[^/]*$' | fzf -m --preview="batcat --color=always {}")
     fi
+    IFS="$OIFS"
 )
 
 #####################################
@@ -90,21 +114,29 @@ open_org_emacs_here() (
 # spreadsheet files
 
 open_spreadsheet() (
+    OIFS="$IFS"
+    IFS='
+'
     if [ $# -eq 0 ]
     then
         localc $(fzf -m < "$CACHE_DIR"/ss_files)
     else
         localc $(rg -i "${@}"'[^/]*$' "$CACHE_DIR"/ss_files | fzf -m)
     fi
+    IFS="$OIFS"
 )
 
 open_spreadsheet_here() (
+    OIFS="$IFS"
+    IFS='
+'
     if [ $# -eq 0 ]
     then
         localc $(fdfind '[.]xls$|[.]ods$|[.]cvs$|[.]xlsx$' | fzf -m)
     else
         localc $(fdfind '[.]xls$|[.]ods$|[.]cvs$|[.]xlsx$' | rg -i "${@}"'[^/]*$' | fzf -m)
     fi
+    IFS="$OIFS"
 )
 
 #####################################
@@ -112,21 +144,29 @@ open_spreadsheet_here() (
 # html files
 
 open_html_emacs() (
+    OIFS="$IFS"
+    IFS='
+'
     if [ $# -eq 0 ]
     then
         em $(fzf -m --preview="batcat --color=always {}" < "$CACHE_DIR"/html_files)
     else
         em $(rg -i "${@}"'[^/]*$' "$CACHE_DIR"/html_files | fzf -m --preview="batcat --color=always {}")
     fi
+    IFS="$OIFS"
 )
 
 open_html_emacs_here() (
+    OIFS="$IFS"
+    IFS='
+'
     if [ $# -eq 0 ]
     then
         em $(fdfind '[.]htm$|[.]html$|[.]php$' | fzf -m --preview="batcat --color=always {}")
     else
         em $(fdfind '[.]htm$|[.]html$|[.]php$' | rg -i "${@}"'[^/]*$' | fzf -m --preview="batcat --color=always {}")
     fi
+    IFS="$OIFS"
 )
 
 #####################################
@@ -134,22 +174,30 @@ open_html_emacs_here() (
 # PDFs
 
 open_pdf()  (
+    OIFS="$IFS"
+    IFS='
+'
     if [ $# -eq 0 ]
     then
         okular $(fzf -m --preview="pdftotext {} -" < "$CACHE_DIR"/pdf_files)
     else
         okular $(rg -i "${@}"'[^/]*$' "$CACHE_DIR"/pdf_files | fzf -m --preview="pdftotext {} -")
     fi
+    IFS="$OIFS"
 )
 
 
 open_pdf_here() (
+    OIFS="$IFS"
+    IFS='
+'
     if [ $# -eq 0 ]
     then
         okular $(fdfind [.]pdf$ | fzf -m --preview="pdftotext {} -")
     else
         okular $(fdfind [.]pdf$ | rg -i "${@}"'[^/]*$' | fzf -m --preview="pdftotext {} -")
     fi
+    IFS="$OIFS"
 )
 
 
@@ -158,6 +206,9 @@ open_pdf_here() (
 # generic files
 
 open_file() (
+    OIFS="$IFS"
+    IFS='
+'
     if [ $# -eq 0 ]
     then
         fzf -m --preview="xdg-mime query filetype {}" < "$CACHE_DIR"/all_files |\
@@ -181,6 +232,7 @@ open_file_here() (
             fzf -m --preview="xdg-mime query filetype {}" |\
                 xargs -ro -d "\n" xdg-open 2>&-
     fi
+    IFS="$OIFS"
 )
 
 
@@ -190,31 +242,45 @@ open_file_here() (
 # directories
 
 cd_fzf() {
+    OIFS="$IFS"
+    IFS='
+'
     if [ $# -eq 0 ]
     then
         cd $(fzf --preview="tree -C -L 1 {}" \
-           --bind="space:toggle-preview" < "$CACHE_DIR"/all_directories)
+           --bind="ctrl-p:toggle-preview" < "$CACHE_DIR"/all_directories)
     else
         cd $(rg -i "${@}"'[^/]*$' "$CACHE_DIR"/all_directories |\
                  fzf --preview="tree -C -L 1 {}" \
-                     --bind="space:toggle-preview")
+                     --bind="ctrl-p:toggle-preview")
     fi
+    IFS="$OIFS"
 }
 
 
 cd_fzf_here() {
+    OIFS="$IFS"
+    IFS='
+'
     if [ $# -eq 0 ]
     then
         cd "$(fdfind -t d -L |\
            fzf --preview="tree -C -L 1 {}" \
-           --bind="space:toggle-preview")"
+           --bind="ctrl-p:toggle-preview")"
     else
         cd "$(fdfind -t d -L -i $@ |\
            fzf --preview="tree -C -L 1 {}" \
-           --bind="space:toggle-preview")"
+           --bind="ctrl-p:toggle-preview"
+)"
     fi
+    IFS="$OIFS"
 }
 
+
+
+fzf_ps_kill() (
+    mykill $(psf "$1" | fzf -m | awk '{print $1}')
+)
 
 
 # ###################################
@@ -236,3 +302,4 @@ alias opdf='open_pdf'
 alias opdfh='open_pdf_here'
 alias cdf='cd_fzf'
 alias cdfh='cd_fzf_here'
+alias fzf_ps_kill='pskill'
