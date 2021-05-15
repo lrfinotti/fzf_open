@@ -2,8 +2,12 @@
 
 # Open files uzing fzf
 
-
 # DEPENDENCIES: fzf
+
+# See:
+# https://www.youtube.com/watch?v=QeJkAs_PEQQ
+#   add option -H for hidden files in fdfind
+
 
 
 
@@ -23,7 +27,7 @@ fi
 ####################################
 
 # LaTeX files
-open_latex_emacs() (
+open_latex_emacs() {
     OIFS="$IFS"
     IFS='
 '
@@ -34,9 +38,9 @@ open_latex_emacs() (
         em $(rg -i "${@}"'[^/]*$' "$CACHE_DIR"/tex_files | fzf -m --preview="batcat --color=always {}")
     fi
     IFS="$OIFS"
-)
+}
 
-open_latex_emacs_here() (
+open_latex_emacs_here() {
     OIFS="$IFS"
     IFS='
 '
@@ -47,13 +51,13 @@ open_latex_emacs_here() (
         em $(fdfind [.]tex$ | rg -i "${@}"'[^/]*$' | fzf -m --preview="batcat --color=always {}")
     fi
     IFS="$OIFS"
-)
+}
 
 #####################################
 
 # text files
 
-open_text_emacs() (
+open_text_emacs() {
     OIFS="$IFS"
     IFS='
 '
@@ -64,9 +68,9 @@ open_text_emacs() (
         em $(rg -i "${@}"'[^/]*$' "$CACHE_DIR"/txt_files | fzf -m --preview="batcat --color=always {}")
     fi
     IFS="$OIFS"
-)
+}
 
-open_text_emacs_here() (
+open_text_emacs_here() {
     OIFS="$IFS"
     IFS='
 '
@@ -77,13 +81,13 @@ open_text_emacs_here() (
         em $(fdfind '[.]txt$|[.]md$|[.]text$' | rg -i "${@}"'[^/]*$' | fzf -m --preview="batcat --color=always {}")
     fi
     IFS="$OIFS"
-)
+}
 
 #####################################
 
 # org files
 
-open_org_emacs() (
+open_org_emacs() {
     OIFS="$IFS"
     IFS='
 '
@@ -94,9 +98,9 @@ open_org_emacs() (
         em $(rg -i "${@}"'[^/]*$' "$CACHE_DIR"/org_files | fzf -m --preview="batcat --color=always {}")
     fi
     IFS="$OIFS"
-)
+}
 
-open_org_emacs_here() (
+open_org_emacs_here() {
     OIFS="$IFS"
     IFS='
 '
@@ -107,13 +111,13 @@ open_org_emacs_here() (
         em $(fdfind '[.]org$' | rg -i "${@}"'[^/]*$' | fzf -m --preview="batcat --color=always {}")
     fi
     IFS="$OIFS"
-)
+}
 
 #####################################
 
 # spreadsheet files
 
-open_spreadsheet() (
+open_spreadsheet() {
     OIFS="$IFS"
     IFS='
 '
@@ -124,9 +128,9 @@ open_spreadsheet() (
         localc $(rg -i "${@}"'[^/]*$' "$CACHE_DIR"/ss_files | fzf -m)
     fi
     IFS="$OIFS"
-)
+}
 
-open_spreadsheet_here() (
+open_spreadsheet_here() {
     OIFS="$IFS"
     IFS='
 '
@@ -137,13 +141,13 @@ open_spreadsheet_here() (
         localc $(fdfind '[.]xls$|[.]ods$|[.]cvs$|[.]xlsx$' | rg -i "${@}"'[^/]*$' | fzf -m)
     fi
     IFS="$OIFS"
-)
+}
 
 #####################################
 
 # html files
 
-open_html_emacs() (
+open_html_emacs() {
     OIFS="$IFS"
     IFS='
 '
@@ -154,9 +158,9 @@ open_html_emacs() (
         em $(rg -i "${@}"'[^/]*$' "$CACHE_DIR"/html_files | fzf -m --preview="batcat --color=always {}")
     fi
     IFS="$OIFS"
-)
+}
 
-open_html_emacs_here() (
+open_html_emacs_here() {
     OIFS="$IFS"
     IFS='
 '
@@ -167,13 +171,13 @@ open_html_emacs_here() (
         em $(fdfind '[.]htm$|[.]html$|[.]php$' | rg -i "${@}"'[^/]*$' | fzf -m --preview="batcat --color=always {}")
     fi
     IFS="$OIFS"
-)
+}
 
 #####################################
 
 # PDFs
 
-open_pdf()  (
+open_pdf() {
     OIFS="$IFS"
     IFS='
 '
@@ -184,10 +188,10 @@ open_pdf()  (
         okular $(rg -i "${@}"'[^/]*$' "$CACHE_DIR"/pdf_files | fzf -m --preview="pdftotext {} -")
     fi
     IFS="$OIFS"
-)
+}
 
 
-open_pdf_here() (
+open_pdf_here() {
     OIFS="$IFS"
     IFS='
 '
@@ -198,14 +202,14 @@ open_pdf_here() (
         okular $(fdfind [.]pdf$ | rg -i "${@}"'[^/]*$' | fzf -m --preview="pdftotext {} -")
     fi
     IFS="$OIFS"
-)
+}
 
 
 #####################################
 
 # generic files
 
-open_file() (
+open_file() {
     OIFS="$IFS"
     IFS='
 '
@@ -218,10 +222,10 @@ open_file() (
             fzf -m --preview="xdg-mime query filetype {}" |\
                 xargs -ro -d "\n" xdg-open 2>&-
     fi
-)
+}
 
 
-open_file_here() (
+open_file_here() {
     if [ $# -eq 0 ]
     then
         fdfind -t f -L |\
@@ -233,7 +237,7 @@ open_file_here() (
                 xargs -ro -d "\n" xdg-open 2>&-
     fi
     IFS="$OIFS"
-)
+}
 
 
 
@@ -278,10 +282,19 @@ cd_fzf_here() {
 
 
 
-fzf_ps_kill() (
+fzf_ps_kill() {
     mykill $(psf "$1" | fzf -m | awk '{print $1}')
-)
+}
 
+
+# ######################################
+# apt install
+
+apti() {
+    sudo apt install $(apt-cache search $@ |\
+                      cut -d' ' -f1 |\
+                      fzf -m --preview="apt-cache show {} | grep -v '^Maint\|^Arch\|^Depen\|^Tag\|^MD5\|^Filename\|^Priority\|Description-md5\|SHA256\|^Size\|^Section\|^Source\|^Replace\|^Breaks' | fold -w 60 -s")
+}
 
 # ###################################
 # ALIASES
