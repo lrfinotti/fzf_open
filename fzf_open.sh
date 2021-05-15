@@ -251,12 +251,10 @@ cd_fzf() {
 '
     if [ $# -eq 0 ]
     then
-        cd $(fzf --preview="tree -C -L 1 {}" \
-           --bind="ctrl-p:toggle-preview" < "$CACHE_DIR"/all_directories)
+        cd $(fzf --preview="tree -C -L 1 {}" < "$CACHE_DIR"/all_directories)
     else
         cd $(rg -i "${@}"'[^/]*$' "$CACHE_DIR"/all_directories |\
-                 fzf --preview="tree -C -L 1 {}" \
-                     --bind="ctrl-p:toggle-preview")
+                 fzf --preview="tree -C -L 1 {}")
     fi
     IFS="$OIFS"
 }
