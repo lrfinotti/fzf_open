@@ -19,7 +19,16 @@ CUR_PATH="$PWD"
 # create cache
 cd "$HOME"
 fdfind -a -t file > "$CACHE_DIR"/all_files
-fdfind -a -t directory -L > "$CACHE_DIR"/all_directories
+fdfind -a -t directory > "$CACHE_DIR"/all_directories
+
+# aditional directories from links
+
+if [ "$HOST" = 'debian' ]; then
+    fdfind -a -t file . --full-path /media/old_home/finotti/math/ >> "$CACHE_DIR"/all_files
+    fdfind -a -t directory . --full-path /media/old_home/finotti/math/ >> "$CACHE_DIR"/all_directories
+    fdfind -a -t file . --full-path /media/old_home/finotti/comp/ >> "$CACHE_DIR"/all_files
+    fdfind -a -t directory . --full-path /media/old_home/finotti/comp/ >> "$CACHE_DIR"/all_directories
+fi
 
 # ############ replace links ################
 
@@ -38,9 +47,11 @@ done
 # let's prefilter the caches
 cd "$CACHE_DIR"
 
-for type in tex pdf org; do
+for type in tex org; do
     rg -i [.]"$type"$ all_files > "$type"_files
 done
+
+rg -i '[.]pdf$|[.]djvu$' all_files > pdf_files
 
 rg -i '[.]txt$|[.]text$|[.]md$' all_files > txt_files
 
