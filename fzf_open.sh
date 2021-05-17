@@ -267,13 +267,10 @@ cd_fzf_here() {
     if [ $# -eq 0 ]
     then
         cd "$(fdfind -t d -L |\
-           fzf --preview="tree -C -L 1 {}" \
-           --bind="ctrl-p:toggle-preview")"
+           fzf --preview="tree -C -L 1 {}")"
     else
         cd "$(fdfind -t d -L -i $@ |\
-           fzf --preview="tree -C -L 1 {}" \
-           --bind="ctrl-p:toggle-preview"
-)"
+           fzf --preview="tree -C -L 1 {}")"
     fi
     IFS="$OIFS"
 }
