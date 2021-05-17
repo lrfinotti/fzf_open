@@ -36,7 +36,7 @@ fi
 # like 351, as it is a link pointing to a link
 
 for link in $(fdfind --exact-depth 1 --type l -a | sort -r); do
-    link_loc=$"$HOME"/$(readlink "$link")
+    link_loc="$HOME"/$(readlink "$link" | sed 's%/$%%')
     sed -i'' s%^"$link_loc"%"$link"% "$CACHE_DIR"/all_files
     sed -i'' s%^"$link_loc"%"$link"% "$CACHE_DIR"/all_directories
 done
