@@ -2,15 +2,20 @@
 
 # Open files uzing fzf
 
-# DEPENDENCIES: fzf
+# DEPENDENCIES: fzf, ripgrep, batcat (bat), fdfind (fd, fd-find)
 
-# See:
+# ########## IMPORTANT ##############
+# If an argument is given, it must be only one, and the filter will be
+# on file names only!
+####################################
+
+
+# CREDITS: See
 # https://www.youtube.com/watch?v=QeJkAs_PEQQ
-#   add option -H for hidden files in fdfind
 
+# Note: add option -H for hidden files in fdfind
 
-
-
+# directory to save cache
 CACHE_DIR="$HOME"/.find_cache
 
 if [ ! -d "$CACHE_DIR" ]
@@ -20,24 +25,31 @@ then
 fi
 
 
+# ###############################
 # main functions
 
+# IMPORTANT: these next two need PARENTHESES instead of curly braces,
+# to force it to run in a subshell!
 open_with () (
-    # open_with -c command args
-    if [ "$#" -le 2 ]
+    # Opens file with command if any arguments,
+    # exit if no arguments.
+    # SYNTAX: open_with -c command args
+    if [ "$#" -ge 3 ]
     then
+        cmdf=$2
+        shift 2
+
+        $cmdf $@
+    else
         exit 1
     fi
-
-    cmdf=$2
-    shift 2
-
-    $cmdf $@
 )
 
-
+# Again, parentheses instead of curly braces!
 fzf_open_file () (
-    # fzf_open_file -h <pattern> -c <command> [-p <preview>]
+    # General function to open files with fzf.
+    # SYNTAX:
+    # fzfet_open_file -h <pattern> -c <command> [-p <preview>]
     # or
     # fzf_open_file -f <file> -c <command> [-p <preview>]
 
@@ -107,203 +119,74 @@ fzf_open_file () (
 )
 
 
-
 #####################################
-
-# ########## IMPORTANT ##############
-# If an argument is given, it must be only one, and the filter will be
-# on file names only!
-####################################
-
-open_latex_emacs() (
-    fzf_open_file -f "tex_files" -c "em" -p "batcat --color=always {}" $1
-)
-
-open_latex_emacs_here() (
-    fzf_open_file -h "[.]tex$" -c "em" -p "batcat --color=always {}" $1
-)
-
 # LaTeX files
-# open_latex_emacs() {
-#     OIFS="$IFS"
-#     IFS='
-# '
-#     if [ $# -eq 0 ]
-#     then
-#         em $(fzf -m --preview="batcat --color=always {}" < "$CACHE_DIR"/tex_files)
-#     else
-#         em $(rg -i "${@}"'[^/]*$' "$CACHE_DIR"/tex_files | fzf -m --preview="batcat --color=always {}")
-#     fi
-#     IFS="$OIFS"
-# }
 
-# open_latex_emacs_here() {
-#     OIFS="$IFS"
-#     IFS='
-# '
-#     if [ $# -eq 0 ]
-#     then
-#         em $(fdfind [.]tex$ | fzf -m --preview="batcat --color=always {}")
-#     else
-#         em $(fdfind [.]tex$ | rg -i "${@}"'[^/]*$' | fzf -m --preview="batcat --color=always {}")
-#     fi
-#     IFS="$OIFS"
-# }
+open_latex_emacs() {
+    fzf_open_file -f "tex_files" -c "em" -p "batcat --color=always {}" $1
+}
+
+open_latex_emacs_here() {
+    fzf_open_file -h "[.]tex$" -c "em" -p "batcat --color=always {}" $1
+}
 
 #####################################
-
 # text files
 
 open_text_emacs() {
-    OIFS="$IFS"
-    IFS='
-'
-    if [ $# -eq 0 ]
-    then
-        em $(fzf -m --preview="batcat --color=always {}" < "$CACHE_DIR"/txt_files)
-    else
-        em $(rg -i "${@}"'[^/]*$' "$CACHE_DIR"/txt_files | fzf -m --preview="batcat --color=always {}")
-    fi
-    IFS="$OIFS"
+    fzf_open_file -f "txt_files" -c "em" -p "batcat --color=always {}" $1
 }
 
 open_text_emacs_here() {
-    OIFS="$IFS"
-    IFS='
-'
-    if [ $# -eq 0 ]
-    then
-        em $(fdfind '[.]txt$|[.]md$|[.]text$' | fzf -m --preview="batcat --color=always {}")
-    else
-        em $(fdfind '[.]txt$|[.]md$|[.]text$' | rg -i "${@}"'[^/]*$' | fzf -m --preview="batcat --color=always {}")
-    fi
-    IFS="$OIFS"
+    fzf_open_file -h "[.]txt$|[.]md$|[.]text$" -c "em" -p "batcat --color=always {}" $1
 }
 
 #####################################
-
 # org files
 
 open_org_emacs() {
-    OIFS="$IFS"
-    IFS='
-'
-    if [ $# -eq 0 ]
-    then
-        em $(fzf -m --preview="batcat --color=always {}" < "$CACHE_DIR"/org_files)
-    else
-        em $(rg -i "${@}"'[^/]*$' "$CACHE_DIR"/org_files | fzf -m --preview="batcat --color=always {}")
-    fi
-    IFS="$OIFS"
+    fzf_open_file -f "org_files" -c "em" -p "batcat --color=always {}" $1
 }
 
 open_org_emacs_here() {
-    OIFS="$IFS"
-    IFS='
-'
-    if [ $# -eq 0 ]
-    then
-        em $(fdfind '[.]org$' | fzf -m --preview="batcat --color=always {}")
-    else
-        em $(fdfind '[.]org$' | rg -i "${@}"'[^/]*$' | fzf -m --preview="batcat --color=always {}")
-    fi
-    IFS="$OIFS"
+    fzf_open_file -h "[.]org$" -c "em" -p "batcat --color=always {}" $1
 }
 
 #####################################
-
 # spreadsheet files
 
 open_spreadsheet() {
-    OIFS="$IFS"
-    IFS='
-'
-    if [ $# -eq 0 ]
-    then
-        localc $(fzf -m < "$CACHE_DIR"/ss_files)
-    else
-        localc $(rg -i "${@}"'[^/]*$' "$CACHE_DIR"/ss_files | fzf -m)
-    fi
-    IFS="$OIFS"
+    fzf_open_file -f "ss_files" -c "localc" $1
 }
 
 open_spreadsheet_here() {
-    OIFS="$IFS"
-    IFS='
-'
-    if [ $# -eq 0 ]
-    then
-        localc $(fdfind '[.]xls$|[.]ods$|[.]cvs$|[.]xlsx$' | fzf -m)
-    else
-        localc $(fdfind '[.]xls$|[.]ods$|[.]cvs$|[.]xlsx$' | rg -i "${@}"'[^/]*$' | fzf -m)
-    fi
-    IFS="$OIFS"
+    fzf_open_file -h "[.]xls$|[.]ods$|[.]csv$|[.]xlsx$" -c "localc" $1
 }
 
 #####################################
-
 # html files
 
 open_html_emacs() {
-    OIFS="$IFS"
-    IFS='
-'
-    if [ $# -eq 0 ]
-    then
-        em $(fzf -m --preview="batcat --color=always {}" < "$CACHE_DIR"/html_files)
-    else
-        em $(rg -i "${@}"'[^/]*$' "$CACHE_DIR"/html_files | fzf -m --preview="batcat --color=always {}")
-    fi
-    IFS="$OIFS"
+    fzf_open_file -f "html_files" -c "em" -p "batcat --color=always {}" $1
 }
 
 open_html_emacs_here() {
-    OIFS="$IFS"
-    IFS='
-'
-    if [ $# -eq 0 ]
-    then
-        em $(fdfind '[.]htm$|[.]html$|[.]php$' | fzf -m --preview="batcat --color=always {}")
-    else
-        em $(fdfind '[.]htm$|[.]html$|[.]php$' | rg -i "${@}"'[^/]*$' | fzf -m --preview="batcat --color=always {}")
-    fi
-    IFS="$OIFS"
+    fzf_open_file -h "[.]htm$|[.]html$|[.]php$" -c "em" -p "batcat --color=always {}" $1
 }
 
 #####################################
-
 # PDFs
 
-open_pdf() {
-    OIFS="$IFS"
-    IFS='
-'
-    if [ $# -eq 0 ]
-    then
-        okular $(fzf -m --preview="pdftotext {} -" < "$CACHE_DIR"/pdf_files)
-    else
-        okular $(rg -i "${@}"'[^/]*$' "$CACHE_DIR"/pdf_files | fzf -m --preview="pdftotext {} -")
-    fi
-    IFS="$OIFS"
-}
 
+open_pdf() {
+    fzf_open_file -f "pdf_files" -c "okular" -p "pdftotext {} -" $1
+}
 
 open_pdf_here() {
-    OIFS="$IFS"
-    IFS='
-'
-    if [ $# -eq 0 ]
-    then
-        okular $(fdfind [.]pdf$ | fzf -m --preview="pdftotext {} -")
-    else
-        okular $(fdfind [.]pdf$ | rg -i "${@}"'[^/]*$' | fzf -m --preview="pdftotext {} -")
-    fi
-    IFS="$OIFS"
+    fzf_open_file -h "[.]pdf|[.]djvu$" -c "okular" -p "pdftotext {} -" $1
 }
 
-
 #####################################
-
 # generic files
 
 open_file() {
@@ -336,11 +219,18 @@ open_file_here() {
     IFS="$OIFS"
 }
 
-
-
 #####################################
-
 # directories
+
+# NOTE: we cannot use open_with here, since it runs in a subshell,
+# which makes the change of directories not affect the shell
+
+my_cd() {
+    if [ "$#" -ge 1 ]
+    then
+        cd $1
+    fi
+}
 
 cd_fzf() {
     OIFS="$IFS"
@@ -348,9 +238,9 @@ cd_fzf() {
 '
     if [ $# -eq 0 ]
     then
-        cd $(fzf --preview="tree -C -L 1 {}" < "$CACHE_DIR"/all_directories)
+        my_cd $(fzf --preview="tree -C -L 1 {}" < "$CACHE_DIR"/all_directories)
     else
-        cd $(rg -i "${@}"'[^/]*$' "$CACHE_DIR"/all_directories |\
+        my_cd $(rg -i "${@}"'[^/]*$' "$CACHE_DIR"/all_directories |\
                  fzf --preview="tree -C -L 1 {}")
     fi
     IFS="$OIFS"
@@ -363,21 +253,19 @@ cd_fzf_here() {
 '
     if [ $# -eq 0 ]
     then
-        cd "$(fdfind -t d -L |\
-           fzf --preview="tree -C -L 1 {}")"
+        my_cd $(fdfind -t d -L | fzf --preview="tree -C -L 1 {}")
     else
-        cd "$(fdfind -t d -L -i $@ |\
-           fzf --preview="tree -C -L 1 {}")"
+        my_cd $(fdfind -t d -L -i $@ | fzf --preview="tree -C -L 1 {}")
     fi
     IFS="$OIFS"
 }
 
-
+# ######################################
+# kill running process
 
 fzf_ps_kill() {
     mykill $(psf "$1" | fzf -m | awk '{print $1}')
 }
-
 
 # ######################################
 # apt install
