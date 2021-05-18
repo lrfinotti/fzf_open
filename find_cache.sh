@@ -14,20 +14,28 @@ CACHE_DIR=$HOME/.find_cache
 # create directory if it does not exist
 [ ! -d "$CACHE_DIR" ] && mkdir "$CACHE_DIR"
 
+# adjust command for if there is ignore file or not
+if [ -f "$CACHE_DIR"/ignore ]
+then
+    fd_options="--ignore-file $CACHE_DIR/ignore -a"
+else
+    fd_options="-a"
+fi
+
 CUR_PATH="$PWD"
 
 # create cache
 cd "$HOME"
-fdfind --ignore-file "$CACHE_DIR"/ignore -a -t file > "$CACHE_DIR"/all_files
-fdfind --ignore-file "$CACHE_DIR"/ignore -a -t directory > "$CACHE_DIR"/all_directories
+fdfind $fd_options -t file > "$CACHE_DIR"/all_files
+fdfind $fd_options -t directory > "$CACHE_DIR"/all_directories
 
 # aditional directories from links
 
 if [ "$HOST" = 'debian' ]; then
-    fdfind --ignore-file "$CACHE_DIR"/ignore -a -t file . --full-path /media/old_home/finotti/math/ >> "$CACHE_DIR"/all_files
-    fdfind --ignore-file "$CACHE_DIR"/ignore -a -t directory . --full-path /media/old_home/finotti/math/ >> "$CACHE_DIR"/all_directories
-    fdfind --ignore-file "$CACHE_DIR"/ignore -a -t file . --full-path /media/old_home/finotti/comp/ >> "$CACHE_DIR"/all_files
-    fdfind --ignore-file "$CACHE_DIR"/ignore -a -t directory . --full-path /media/old_home/finotti/comp/ >> "$CACHE_DIR"/all_directories
+    fdfind $fd_options -t file . --full-path /media/old_home/finotti/math/ >> "$CACHE_DIR"/all_files
+    fdfind $fd_options -t directory . --full-path /media/old_home/finotti/math/ >> "$CACHE_DIR"/all_directories
+    fdfind $fd_options -t file . --full-path /media/old_home/finotti/comp/ >> "$CACHE_DIR"/all_files
+    fdfind $fd_options -t directory . --full-path /media/old_home/finotti/comp/ >> "$CACHE_DIR"/all_directories
 fi
 
 # ############ replace links ################
