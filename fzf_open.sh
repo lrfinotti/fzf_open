@@ -19,6 +19,95 @@ then
     exit 1
 fi
 
+
+# main functions
+
+open_with () (
+    # open_with -c command args
+    if [ "$#" -le 2 ]
+    then
+        exit 1
+    fi
+
+    cmdf=$2
+    shift 2
+
+    $cmdf $@
+)
+
+
+fzf_open_file () (
+    # fzf_open_file -h <pattern> -c <command> [-p <preview>]
+    # or
+    # fzf_open_file -f <file> -c <command> [-p <preview>]
+
+    # make sure spaces are not a problem
+    IFS='
+'
+
+    pattern=''
+    preview=''
+
+    # set opptions
+    while getopts "h:c:f:p:" opt; do
+        case $opt in
+            h)
+                pattern="$OPTARG"
+                ;;
+            c)
+                cmd="$OPTARG"
+                ;;
+            f)
+                file="$OPTARG"
+                ;;
+            p)
+                preview="$OPTARG"
+        esac
+    done
+
+    shift $((OPTIND -1))
+
+    if [ -z "$pattern" ]
+    then
+        if [ -z "$preview" ]
+        then
+            if [ $# -eq 0 ]
+            then
+                open_with -c $cmd $(fzf -m  < "$CACHE_DIR"/"$file")
+            else
+                open_with -c $cmd $(rg -i "$1"'[^/]*$' "$CACHE_DIR"/"$file" | fzf -m)
+            fi
+        else
+            if [ $# -eq 0 ]
+            then
+                open_with -c $cmd $(fzf -m --preview="$preview" < "$CACHE_DIR"/"$file")
+            else
+                open_with -c $cmd $(rg -i "$1"'[^/]*$' "$CACHE_DIR"/"$file" | fzf -m --preview="$preview")
+            fi
+        fi
+    else
+        if [ -z "$preview" ]
+        then
+            if [ $# -eq 0 ]
+            then
+                open_with -c $cmd $(fdfind "$pattern" | fzf -m)
+            else
+                open_with -c $cmd $(fdfind "$pattern" | rg -i "$1"'[^/]*$' | fzf -m)
+            fi
+        else
+            if [ $# -eq 0 ]
+            then
+                open_with -c $cmd $(fdfind "$pattern" | fzf -m --preview="$preview")
+            else
+                open_with -c $cmd $(fdfind "$pattern" | rg -i "$1"'[^/]*$' | fzf -m --preview="$preview")
+            fi
+        fi
+
+    fi
+)
+
+
+
 #####################################
 
 # ########## IMPORTANT ##############
@@ -26,32 +115,40 @@ fi
 # on file names only!
 ####################################
 
-# LaTeX files
-open_latex_emacs() {
-    OIFS="$IFS"
-    IFS='
-'
-    if [ $# -eq 0 ]
-    then
-        em $(fzf -m --preview="batcat --color=always {}" < "$CACHE_DIR"/tex_files)
-    else
-        em $(rg -i "${@}"'[^/]*$' "$CACHE_DIR"/tex_files | fzf -m --preview="batcat --color=always {}")
-    fi
-    IFS="$OIFS"
-}
+open_latex_emacs() (
+    fzf_open_file -f "tex_files" -c "em" -p "batcat --color=always {}" $1
+)
 
-open_latex_emacs_here() {
-    OIFS="$IFS"
-    IFS='
-'
-    if [ $# -eq 0 ]
-    then
-        em $(fdfind [.]tex$ | fzf -m --preview="batcat --color=always {}")
-    else
-        em $(fdfind [.]tex$ | rg -i "${@}"'[^/]*$' | fzf -m --preview="batcat --color=always {}")
-    fi
-    IFS="$OIFS"
-}
+open_latex_emacs_here() (
+    fzf_open_file -h "[.]tex$" -c "em" -p "batcat --color=always {}" $1
+)
+
+# LaTeX files
+# open_latex_emacs() {
+#     OIFS="$IFS"
+#     IFS='
+# '
+#     if [ $# -eq 0 ]
+#     then
+#         em $(fzf -m --preview="batcat --color=always {}" < "$CACHE_DIR"/tex_files)
+#     else
+#         em $(rg -i "${@}"'[^/]*$' "$CACHE_DIR"/tex_files | fzf -m --preview="batcat --color=always {}")
+#     fi
+#     IFS="$OIFS"
+# }
+
+# open_latex_emacs_here() {
+#     OIFS="$IFS"
+#     IFS='
+# '
+#     if [ $# -eq 0 ]
+#     then
+#         em $(fdfind [.]tex$ | fzf -m --preview="batcat --color=always {}")
+#     else
+#         em $(fdfind [.]tex$ | rg -i "${@}"'[^/]*$' | fzf -m --preview="batcat --color=always {}")
+#     fi
+#     IFS="$OIFS"
+# }
 
 #####################################
 
