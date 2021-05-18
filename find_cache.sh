@@ -15,9 +15,9 @@ CACHE_DIR=$HOME/.find_cache
 [ ! -d "$CACHE_DIR" ] && mkdir "$CACHE_DIR"
 
 # adjust command for if there is ignore file or not
-if [ -f "$CACHE_DIR"/ignore ]
+if [ -f "$CACHE_DIR"/_ignore ]
 then
-    fd_options="--ignore-file $CACHE_DIR/ignore -a"
+    fd_options="--ignore-file $CACHE_DIR/_ignore -a"
 else
     fd_options="-a"
 fi
