@@ -63,7 +63,7 @@ rg -i '[.]pdf$|[.]djvu$' all_files > pdf_files
 
 rg -i '[.]txt$|[.]text$|[.]md$' all_files > txt_files
 
-rg -i '[.]xls$|[.]ods$|[.]cvs$|[.]xlsx$' all_files > ss_files
+rg -i '[.]xls$|[.]ods$|[.]csv$|[.]xlsx$' all_files > ss_files
 
 rg -i '[.]htm$|[.]html$|[.]php$' all_files > html_files
 
