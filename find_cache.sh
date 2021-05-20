@@ -29,14 +29,17 @@ cd "$HOME"
 fdfind $fd_options -t file > "$CACHE_DIR"/all_files
 fdfind $fd_options -t directory > "$CACHE_DIR"/all_directories
 
-# aditional directories from links
 
-if [ "$HOST" = 'debian' ]; then
-    fdfind $fd_options -t file . --full-path /media/old_home/finotti/math/ >> "$CACHE_DIR"/all_files
-    fdfind $fd_options -t directory . --full-path /media/old_home/finotti/math/ >> "$CACHE_DIR"/all_directories
-    fdfind $fd_options -t file . --full-path /media/old_home/finotti/comp/ >> "$CACHE_DIR"/all_files
-    fdfind $fd_options -t directory . --full-path /media/old_home/finotti/comp/ >> "$CACHE_DIR"/all_directories
-fi
+# aditional directories from links
+while read -r dir
+do
+    if [ -n "$dir" ] && [ -d "$dir" ]
+    then
+        fdfind $fd_options -t file . --full-path "$dir" >> "$CACHE_DIR"/all_files
+        fdfind $fd_options -t directory . --full-path "$dir" >> "$CACHE_DIR"/all_directories
+    fi
+done < "$CACHE_DIR"/_add
+
 
 # ############ replace links ################
 
