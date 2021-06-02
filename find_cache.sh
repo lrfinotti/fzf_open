@@ -31,15 +31,17 @@ fdfind $fd_options -t directory > "$CACHE_DIR"/all_directories
 
 
 # aditional directories from links
-while read -r dir
-do
-    if [ -n "$dir" ] && [ -d "$dir" ]
-    then
-        fdfind $fd_options -t file . --full-path "$dir" >> "$CACHE_DIR"/all_files
-        fdfind $fd_options -t directory . --full-path "$dir" >> "$CACHE_DIR"/all_directories
-    fi
-done < "$CACHE_DIR"/_add
-
+if [ -f "$CACHE_DIR"/_add ]
+then
+    while read -r dir
+    do
+        if [ -n "$dir" ] && [ -d "$dir" ]
+        then
+            fdfind $fd_options -t file . --full-path "$dir" >> "$CACHE_DIR"/all_files
+            fdfind $fd_options -t directory . --full-path "$dir" >> "$CACHE_DIR"/all_directories
+        fi
+    done < "$CACHE_DIR"/_add
+fi
 
 # ############ replace links ################
 

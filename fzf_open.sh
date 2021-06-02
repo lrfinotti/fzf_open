@@ -34,6 +34,8 @@ open_with () (
     # Opens file with command if any arguments,
     # exit if no arguments.
     # SYNTAX: open_with -c command args
+    IFS='
+'
     if [ "$#" -ge 3 ]
     then
         cmdf=$2
