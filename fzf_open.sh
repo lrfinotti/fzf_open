@@ -242,7 +242,9 @@ cd_fzf() {
     then
         my_cd $(fzf --preview="tree -C -L 1 {}" < "$CACHE_DIR"/all_directories)
     else
-        my_cd $(rg -i "${@}"'[^/]*$' "$CACHE_DIR"/all_directories |\
+        # my_cd $(rg -i "${@}"'[^/]*$' "$CACHE_DIR"/all_directories |\
+        #          fzf --preview="tree -C -L 1 {}")
+        my_cd $(rg -i "${@}" "$CACHE_DIR"/all_directories |\
                  fzf --preview="tree -C -L 1 {}")
     fi
     IFS="$OIFS"
@@ -266,7 +268,7 @@ cd_fzf_here() {
 # kill running process
 
 fzf_ps_kill() {
-    mykill $(psf "$1" | fzf -m | awk '{print $1}')
+    mykill $(psf "$1" | fzf -m | awk '{print $2}')
 }
 
 # ######################################
