@@ -104,16 +104,16 @@ fzf_open_file () (
         then
             if [ $# -eq 0 ]
             then
-                open_with -c $cmd $(fdfind "$pattern" | fzf -m)
+                open_with -c $cmd $(fdfind -I "$pattern" | fzf -m)
             else
-                open_with -c $cmd $(fdfind "$pattern" | rg -i "$1"'[^/]*$' | fzf -m)
+                open_with -c $cmd $(fdfind -I "$pattern" | rg -i "$1"'[^/]*$' | fzf -m)
             fi
         else
             if [ $# -eq 0 ]
             then
-                open_with -c $cmd $(fdfind "$pattern" | fzf -m --preview="$preview")
+                open_with -c $cmd $(fdfind -I "$pattern" | fzf -m --preview="$preview")
             else
-                open_with -c $cmd $(fdfind "$pattern" | rg -i "$1"'[^/]*$' | fzf -m --preview="$preview")
+                open_with -c $cmd $(fdfind -I "$pattern" | rg -i "$1"'[^/]*$' | fzf -m --preview="$preview")
             fi
         fi
 
@@ -191,32 +191,49 @@ open_pdf_here() {
 #####################################
 # generic files
 
+# Note that xdg-open only works for a single file!
 open_file() {
     OIFS="$IFS"
     IFS='
 '
+    # if [ $# -eq 0 ]
+    # then
+    #     fzf -m --preview="xdg-mime query filetype {}" < "$CACHE_DIR"/all_files |\
+    #         xargs -ro -d "\n" xdg-open  &> /dev/null
+    # else
+    #     rg -i "${@}"'[^/]*$' "$CACHE_DIR"/all_files |\
+    #         fzf -m --preview="xdg-mime query filetype {}" |\
+    #             xargs -ro -d "\n" xdg-open  &> /dev/null
+    # fi
     if [ $# -eq 0 ]
     then
-        fzf -m --preview="xdg-mime query filetype {}" < "$CACHE_DIR"/all_files |\
-            xargs -ro -d "\n" xdg-open 2>&-
+        xdg-open $(fzf --preview="xdg-mime query filetype {}" < "$CACHE_DIR"/all_files) &> /dev/null
     else
-        rg -i "${@}"'[^/]*$' "$CACHE_DIR"/all_files |\
-            fzf -m --preview="xdg-mime query filetype {}" |\
-                xargs -ro -d "\n" xdg-open 2>&-
+        xdg-open $(rg -i "${@}"'[^/]*$' "$CACHE_DIR"/all_files |\
+            fzf --preview="xdg-mime query filetype {}") &> /dev/null
     fi
+    IFS="$OIFS"
 }
 
 
 open_file_here() {
-    if [ $# -eq 0 ]
+    # if [ $# -eq 0 ]
+    # then
+    #     fdfind -I -t f -L |\
+    #         fzf -m --preview="xdg-mime query filetype {}" |\
+    #         xargs -ro -d "\n" xdg-open  &> /dev/null
+    # else
+    #     fdfind -I -t f -L -i "${@}"'[^/]*$' |\
+    #         fzf -m --preview="xdg-mime query filetype {}" |\
+    #             xargs -ro -d "\n" xdg-open  &> /dev/null
+    # fi
+        if [ $# -eq 0 ]
     then
-        fdfind -t f -L |\
-            fzf -m --preview="xdg-mime query filetype {}" |\
-            xargs -ro -d "\n" xdg-open 2>&-
+        xdg-open $(fdfind -I -t f -L |\
+            fzf --preview="xdg-mime query filetype {}") &> /dev/null
     else
-        fdfind -t f -L -i "${@}"'[^/]*$' |\
-            fzf -m --preview="xdg-mime query filetype {}" |\
-                xargs -ro -d "\n" xdg-open 2>&-
+        xdg-open $(fdfind -I -t f -L -i "${@}"'[^/]*$' |\
+            fzf -m --preview="xdg-mime query filetype {}") &> /dev/null
     fi
     IFS="$OIFS"
 }
@@ -257,9 +274,9 @@ cd_fzf_here() {
 '
     if [ $# -eq 0 ]
     then
-        my_cd $(fdfind -t d -L | fzf --preview="tree -C -L 1 {}")
+        my_cd $(fdfind -I -t d -L | fzf --preview="tree -C -L 1 {}")
     else
-        my_cd $(fdfind -t d -L -i $@ | fzf --preview="tree -C -L 1 {}")
+        my_cd $(fdfind -I -t d -L -i $@ | fzf --preview="tree -C -L 1 {}")
     fi
     IFS="$OIFS"
 }
