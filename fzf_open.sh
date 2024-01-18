@@ -291,11 +291,21 @@ fzf_ps_kill() {
 # ######################################
 # apt install
 
+# apti() {
+#     sudo apt install $(apt-cache search $@ |\
+#                       cut -d' ' -f1 |\
+#                       fzf -m --height=60 --preview="apt-cache show {} | grep -v  '^Installed-Size\|^Maintainer\|^Architecture\|^Provides\|^Depends\|^Recommends\|^Suggests\|^Breaks\|^Description-md5\|^Section\|^Priority\|^Filename\|^Size\|^MD5sum\|^SHA256\|^Source\|^Replace' | grep -v '::' | fold -w 60 -s")
+# }
+
 apti() {
-    sudo apt install $(apt-cache search $@ |\
+    pkg_list=$(apt-cache search $@ |\
                       cut -d' ' -f1 |\
-                      fzf -m --preview="apt-cache show {} | grep -v '^Maint\|^Arch\|^Depen\|^Tag\|^MD5\|^Filename\|^Priority\|Description-md5\|SHA256\|^Size\|^Section\|^Source\|^Replace\|^Breaks' | fold -w 60 -s")
+                      fzf -m --height=60 --preview="apt-cache show {} | grep -v  '^Installed-Size\|^Maintainer\|^Architecture\|^Provides\|^Depends\|^Recommends\|^Suggests\|^Breaks\|^Description-md5\|^Section\|^Priority\|^Filename\|^Size\|^MD5sum\|^SHA256\|^Source\|^Replace' | grep -v '::'")
+    if [ "$pkg_list" != "" ]; then
+        sudo apt install $pkg_list
+    fi
 }
+
 
 # ###################################
 # ALIASES
